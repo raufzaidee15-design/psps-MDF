@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen() {
+fun MainScreen(navController: androidx.navigation.NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -36,15 +36,24 @@ fun MainScreen() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = { /* TODO: Navigate to Pen State */ }, modifier = Modifier.fillMaxWidth()) {
+        Button(
+            onClick = { navController.navigate("penstate") },
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text("Key in Pen State")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { /* TODO: Navigate to Milking Data */ }, modifier = Modifier.fillMaxWidth()) {
+        Button(
+            onClick = { navController.navigate("milking") },
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text("Key in Milking Data")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { /* TODO: Navigate to Report */ }, modifier = Modifier.fillMaxWidth()) {
+        Button(
+            onClick = { navController.navigate("report") },
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text("Show Report")
         }
     }
