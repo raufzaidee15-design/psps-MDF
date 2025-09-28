@@ -110,7 +110,39 @@ fun PenStateScreen() {
 
         Spacer(Modifier.height(20.dp))
 
-        // Result
+        Button(
+            onClick = {
+                val total = totalWeight.toFloatOrNull() ?: return@Button
+                val a = weightA.toFloatOrNull() ?: 0f
+                val b = weightB.toFloatOrNull() ?: 0f
+                val c = weightC.toFloatOrNull() ?: 0f
+
+                val pa = if (total > 0) (a / total) * 100 else 0f
+                val pb = if (total > 0) (b / total) * 100 else 0f
+                val pab = pa + pb
+
+                DataRepository.penStates.add(
+                    com.example.mawai.model.PenState(
+                        date = date,
+                        barn = barn,
+                        totalWeight = total,
+                        weightA = a,
+                        weightB = b,
+                        weightC = c,
+                        percentA = pa,
+                        percentB = pb,
+                        percentAB = pab
+                    )
+                )
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Save Entry")
+        }
+
+        Spacer(Modifier.height(20.dp))
+
+        // Result preview
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
