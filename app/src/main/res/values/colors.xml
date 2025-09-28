@@ -1,0 +1,5 @@
+<resources>
+    <color name="grass_green">#A8D5BA</color> <!-- soft green grass -->
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+</resources>
