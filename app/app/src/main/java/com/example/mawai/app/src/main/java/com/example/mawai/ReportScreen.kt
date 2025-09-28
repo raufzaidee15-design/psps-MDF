@@ -71,29 +71,81 @@ fun ReportScreen() {
     }
 }
 
+import android.graphics.pdf.PdfDocument
+import android.graphics.Paint
+import android.graphics.Typeface
+
 fun generatePdfAndShare(context: Context, penEntries: List<PenState>, milkEntries: List<MilkingData>) {
     try {
-        val pdfFile = File(context.cacheDir, "Report.pdf")
-        val outputStream = FileOutputStream(pdfFile)
+        val pdfDocument = PdfDocument()
+        val paint = Paint()
+        val titlePaint = Paint().apply {
+            typeface = Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
+            textSize = 18f
+        }
 
-        val header = "Pen State Report Mawai Dairy Farm\n\n"
-        outputStream.write(header.toByteArray())
+        val pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create() // A4
+        val page = pdfDocument.startPage(pageInfo)
+        val canvas = page.canvas
 
-        outputStream.write("=== Pen State ===\n".toByteArray())
+        var y = 50
+
+        // Title
+        canvas.drawText("Pen State Report Mawai Dairy Farm", 50f, y.toFloat(), titlePaint)
+        y += 40
+
+        // === Pen State Table ===
+        canvas.drawText("Pen State Data", 50f, y.toFloat(), titlePaint)
+        y += 30
+
+        // Table header
+        paint.typeface = Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
+        canvas.drawText("Date", 50f, y.toFloat(), paint)
+        canvas.drawText("Barn", 150f, y.toFloat(), paint)
+        canvas.drawText("A%", 250f, y.toFloat(), paint)
+        canvas.drawText("B%", 330f, y.toFloat(), paint)
+        canvas.drawText("A+B%", 410f, y.toFloat(), paint)
+        y += 20
+        paint.typeface = Typeface.DEFAULT
+
         penEntries.forEach {
-            val line = "Date: ${it.date}, Barn: ${it.barn}, A: ${"%.2f".format(it.percentA)}%, " +
-                    "B: ${"%.2f".format(it.percentB)}%, A+B: ${"%.2f".format(it.percentAB)}%\n"
-            outputStream.write(line.toByteArray())
+            canvas.drawText(it.date, 50f, y.toFloat(), paint)
+            canvas.drawText(it.barn, 150f, y.toFloat(), paint)
+            canvas.drawText("%.2f".format(it.percentA), 250f, y.toFloat(), paint)
+            canvas.drawText("%.2f".format(it.percentB), 330f, y.toFloat(), paint)
+            canvas.drawText("%.2f".format(it.percentAB), 410f, y.toFloat(), paint)
+            y += 20
         }
 
-        outputStream.write("\n=== Milking Data ===\n".toByteArray())
+        y += 40
+
+        // === Milking Data Table ===
+        canvas.drawText("Milking Data", 50f, y.toFloat(), titlePaint)
+        y += 30
+
+        // Table header
+        paint.typeface = Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
+        canvas.drawText("Date", 50f, y.toFloat(), paint)
+        canvas.drawText("Barn", 150f, y.toFloat(), paint)
+        canvas.drawText("Milk (L)", 250f, y.toFloat(), paint)
+        y += 20
+        paint.typeface = Typeface.DEFAULT
+
         milkEntries.forEach {
-            val line = "Date: ${it.date}, Barn: ${it.barn}, Milk: ${it.totalMilk} liters\n"
-            outputStream.write(line.toByteArray())
+            canvas.drawText(it.date, 50f, y.toFloat(), paint)
+            canvas.drawText(it.barn, 150f, y.toFloat(), paint)
+            canvas.drawText("${it.totalMilk}", 250f, y.toFloat(), paint)
+            y += 20
         }
 
-        outputStream.close()
+        pdfDocument.finishPage(page)
 
+        // Save PDF file
+        val pdfFile = File(context.cacheDir, "Report.pdf")
+        pdfDocument.writeTo(FileOutputStream(pdfFile))
+        pdfDocument.close()
+
+        // Share intent
         val uri: Uri = androidx.core.content.FileProvider.getUriForFile(
             context,
             "${context.packageName}.provider",
