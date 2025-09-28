@@ -1,7 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Theme.MDF" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:colorBackground">@color/grass_green</item>
+    <!-- Base app theme -->
+    <style name="Theme.MawaiDairyFarm" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your colors -->
+        <item name="colorPrimary">#4CAF50</item> <!-- soft grass green -->
+        <item name="colorOnPrimary">#FFFFFF</item> <!-- white text on green -->
+        <item name="colorSecondary">#81C784</item> <!-- lighter green -->
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <item name="android:navigationBarColor">?attr/colorPrimary</item>
     </style>
 
 </resources>
